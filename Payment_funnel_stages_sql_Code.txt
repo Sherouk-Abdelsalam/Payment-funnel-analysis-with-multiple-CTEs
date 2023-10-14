@@ -1,0 +1,36 @@
+-- In this SQL code, we are analyzing and categorizing subscriptions based on their payment funnel stages.
+
+-- The first Common Table Expression (CTE), MAX_STATUS_REACHED, calculates the maximum status reached for each subscription which are in a chronological order and 0 is the error stage
+WITH MAX_STATUS_REACHED AS (
+    SELECT 
+        subscriptionid, 
+        MAX(STATUSID) AS maxstatus
+    FROM paymentstatuslog
+    GROUP BY subscriptionid
+)
+
+-- The second CTE, paymentfunnelstages, determines the payment funnel stage for each subscription based on maxstatus and currentstatus.
+, paymentfunnelstages AS (
+    SELECT
+        subs.subscriptionid,
+        -- Using a CASE statement to categorize subscriptions into payment funnel stages based on maxstatus and currentstatus.
+        CASE 
+            WHEN maxstatus = 1 THEN 'PaymentWidgetOpened'
+            WHEN maxstatus = 2 THEN 'PaymentEntered'
+            WHEN maxstatus = 3 AND currentstatus = 0 THEN 'User Error with Payment Submission'
+            WHEN maxstatus = 3 AND currentstatus != 0 THEN 'Payment Submitted'
+            WHEN maxstatus = 4 AND currentstatus = 0 THEN 'Payment Processing Error with Vendor'
+            WHEN maxstatus = 4 AND currentstatus != 0 THEN 'Payment Success'
+            WHEN maxstatus = 5 THEN 'Complete'
+            WHEN maxstatus IS NULL THEN 'User did not start payment process'
+        END AS paymentfunnelstage
+    FROM subscriptions subs
+    LEFT JOIN MAX_STATUS_REACHED m ON subs.subscriptionid = m.subscriptionid
+)
+
+-- The final query counts the number of subscriptions in each payment funnel stage and presents the results.
+SELECT 
+    PAYMENTFUNNELSTAGE,
+    COUNT(subscriptionid) AS subscriptions
+FROM paymentfunnelstages
+GROUP BY paymentfunnelstage;
