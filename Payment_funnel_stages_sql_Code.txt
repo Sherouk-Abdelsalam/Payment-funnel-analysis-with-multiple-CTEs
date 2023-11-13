@@ -1,6 +1,7 @@
 -- In this SQL code, we are analyzing and categorizing subscriptions based on their payment funnel stages.
 
--- The first Common Table Expression (CTE), MAX_STATUS_REACHED, calculates the maximum status reached for each subscription which are in a chronological order and 0 is the error stage
+-- The first Common Table Expression (CTE), MAX_STATUS_REACHED, calculates the maximum status reached for each subscription which are numeric and in a chronological order and 0 is the error stage
+
 WITH MAX_STATUS_REACHED AS (
     SELECT 
         subscriptionid, 
