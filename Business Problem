@@ -9,3 +9,8 @@ Here's the payment process a user goes through when signing up for a subscriptio
  The payment company completes the transaction and reports back with "complete." (STATUSID 5) 
  Error (STATUSID is 0)
  
+As subscriptions move through the statuses, the movements are logged in the "paymentstatuslog" table using the "statusid". 
+Users can go back and forth and move through statuses multiple times.  Users move through a few statuses, hit an error, restart the process, and then finally complete their payment. 
+
+Users' current status can be found on table "subscriptions".
+
