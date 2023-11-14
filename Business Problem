@@ -1,0 +1,11 @@
+# Payment-funnel-analysis-with-multiple-CTEs
+A payment funnel analysis to understand the furthest point in the payment process users are getting to and where users are falling out of the process.  
+
+Here's the payment process a user goes through when signing up for a subscription:  
+ The user opens the widget to initiate the payment process. (STATUSID 1)  
+ The user types in credit card information. (STATUSID 2) 
+ The user clicks the submit button to complete their part of the payment process. (STATUSID 3) 
+ The product sends the data to the third-party payment processing company. (STATUSID 4) 
+ The payment company completes the transaction and reports back with "complete." (STATUSID 5) 
+ Error (STATUSID is 0)
+ 
